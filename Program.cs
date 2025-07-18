@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ConsoleApp4
 {
@@ -289,10 +290,43 @@ namespace ConsoleApp4
 
         static Predicate<int> IsEvenPredicate = IsEven;
 
-        
+
+        // Example 5, Lambda Expression
+        static Predicate<int> IsEvenPredicate2 = x => x % 2 == 0;
+
+        // Another Example 5.2
+        delegate int Operation(int x, int y);
+
+        static void ExecuteOperation(int x, int y, Operation operation)
+        {
+            Console.WriteLine("Result: " + operation(x, y));
+        }
+
+        // Another Example 5.3
+        static void ExecuteOperation(int x, int y, Func<int, int ,int> Operation)
+        {
+            Console.WriteLine("Result: " + Operation(x, y));
+        }
+
         static void Main(string[] args)
         {
-            Console.WriteLine(IsEvenPredicate(4));
+            // Example 5
+            Console.WriteLine(IsEvenPredicate2(4));
+
+            // Another Example 5.2
+            Operation AddOp = (x, y) => x + y;
+            Operation SubOp = (x, y) => x - y;
+
+            ExecuteOperation(10, 20, AddOp);
+            ExecuteOperation(10, 20, SubOp);
+
+            // Another Example 5.3
+            Func<int, int, int> AddOp2 = (x, y) => x + y;
+            Func<int, int, int> SubOp2 = (x, y) => x - y;
+
+            ExecuteOperation(10, 20, AddOp2);
+            ExecuteOperation(10, 20, SubOp2);
+
         }
     }
 }

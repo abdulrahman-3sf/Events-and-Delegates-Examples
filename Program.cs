@@ -257,7 +257,7 @@ namespace ConsoleApp4
 
     public class Program
     {
-        // Example 2, Func Delegate
+        // Example 2, Func Delegate ( If the function have return value )
         static int SquareMethod(int x)
         {
             return x * x;
@@ -265,11 +265,25 @@ namespace ConsoleApp4
 
         static Func<int, int> square = SquareMethod;
 
+
+        // Example 3, Action Delegate (If the function don't have return value )
+        static void PrintHello()
+        {
+            Console.WriteLine("Hello");
+        }
+
+        static void PrintHelloWithMessage(string message)
+        {
+            Console.WriteLine("Hello " + message);
+        }
+
+        static Action printHello = PrintHello;
+        static Action<string> printHelloWithMessage = PrintHelloWithMessage;
+
         static void Main(string[] args)
         {
-            int result = square(5);
-
-            Console.WriteLine(result);
+            printHello();
+            printHelloWithMessage("World");
         }
     }
 }

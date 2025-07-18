@@ -63,17 +63,84 @@ namespace ConsoleApp4
         }
     }
 
+
+    // Example 2
+    public class NewsArticle
+    {
+        public string Title { get; }
+        public string Content { get; }
+
+        public NewsArticle(string Title, string Content)
+        {
+            this.Title = Title;
+            this.Content = Content;
+        }
+    }
+    public class NewsPublisher
+    {
+        public event EventHandler<NewsArticle> NewNewsPublished;
+
+        public void PublishNews(string Title, string Content)
+        {
+            NewsArticle Article = new NewsArticle(Title, Content);
+
+            OnNewNewsPublished(Article);
+        }
+
+        public virtual void OnNewNewsPublished(NewsArticle Article)
+        {
+            NewNewsPublished?.Invoke(this, Article);
+        }
+    }
+    public class NewsSubscriber
+    {
+        public string Name { get; }
+
+        public NewsSubscriber(string Name)
+        {
+            this.Name = Name;
+        }
+
+        public void Subscribe(NewsPublisher publisher)
+        {
+            publisher.NewNewsPublished += HandleNewNews;
+        }
+
+        public void UnSubscribe(NewsPublisher publisher)
+        {
+            publisher.NewNewsPublished -= HandleNewNews;
+        }
+
+        public void HandleNewNews(object sender, NewsArticle article)
+        {
+            Console.WriteLine($"{Name} received a new news article:");
+            Console.WriteLine($"Title: {article.Title}");
+            Console.WriteLine($"Content: {article.Content}");
+            Console.WriteLine();
+        }
+    }
+
+
     public class Program
     {
         static void Main(string[] args)
         {
-            Thermostat thermostat = new Thermostat();
-            Display display = new Display();
+            NewsPublisher publisher = new NewsPublisher();
+            NewsSubscriber subscriber1 = new NewsSubscriber("Sub1");
+            NewsSubscriber subscriber2 = new NewsSubscriber("Sub2");
 
-            display.Subscribe(thermostat);
+            subscriber1.Subscribe(publisher);
+            subscriber2.Subscribe(publisher);
 
-            thermostat.SetTemperature(50);
-            thermostat.SetTemperature(20);
+            publisher.PublishNews("News", "Some text here nothing else");
+
+            subscriber1.UnSubscribe(publisher);
+
+            publisher.PublishNews("News2", "Some text here nothing else");
+
+            subscriber2.UnSubscribe(publisher);
+
+            publisher.PublishNews("News3", "Some text here nothing else");
         }
     }
 }

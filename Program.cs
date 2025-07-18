@@ -257,23 +257,19 @@ namespace ConsoleApp4
 
     public class Program
     {
-        public static void LogToScreen(string message)
+        // Example 2, Func Delegate
+        static int SquareMethod(int x)
         {
-            Console.WriteLine(message);
+            return x * x;
         }
 
-        public static void LogToDatabase(string message)
-        {
-            // Here I can write code to log the message to the database
-        }
+        static Func<int, int> square = SquareMethod;
 
         static void Main(string[] args)
         {
-            Logger screenLogger = new Logger(LogToScreen);
-            Logger DBLogger = new Logger(LogToDatabase);
+            int result = square(5);
 
-            screenLogger.Log("This message will be displayed on the screen");
-            DBLogger.Log("This message will be logged to the database");
+            Console.WriteLine(result);
         }
     }
 }

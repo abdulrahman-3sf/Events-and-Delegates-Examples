@@ -234,21 +234,46 @@ namespace ConsoleApp4
     }
 
 
+
+    // ------------------- Delegates -------------------
+    
+    // Example 1, Logger
+    public class Logger
+    {
+        public delegate void LogAction(string message);
+        private LogAction _LogAction;
+
+        public Logger(LogAction action)
+        {
+            _LogAction = action;
+        }
+
+        public void Log(string message)
+        {
+            _LogAction(message);
+        }
+    }
+
+
     public class Program
     {
+        public static void LogToScreen(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public static void LogToDatabase(string message)
+        {
+            // Here I can write code to log the message to the database
+        }
+
         static void Main(string[] args)
         {
-            Order order = new Order();
+            Logger screenLogger = new Logger(LogToScreen);
+            Logger DBLogger = new Logger(LogToDatabase);
 
-            EmailService emailService = new EmailService();
-            SMSService smsService = new SMSService();
-            ShippingService shippingService = new ShippingService();
-
-            emailService.Subscribe(order);
-            smsService.Subscribe(order);
-            shippingService.Subscribe(order);
-
-            order.Create(23, 554, "3sf@gmail.com");
+            screenLogger.Log("This message will be displayed on the screen");
+            DBLogger.Log("This message will be logged to the database");
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -121,26 +123,132 @@ namespace ConsoleApp4
     }
 
 
+    // Example 3
+    public class OrderEventArgs : EventArgs
+    {
+        public int OrderID { get; }
+        public int OrderTotalPrice { get; }
+        public string ClientEmail { get; }
+
+        public OrderEventArgs(int OrderID, int OrderTotalPrice, string ClientEmail)
+        {
+            this.OrderID = OrderID;
+            this.OrderTotalPrice = OrderTotalPrice;
+            this.ClientEmail = ClientEmail;
+        }
+    }
+    public class Order
+    {
+        public event EventHandler<OrderEventArgs> OnOrderCreated;
+
+        public void Create(int OrderID, int OrderTotalPrice, string ClientEmail)
+        {
+            Console.WriteLine("New Order Created, now will notify everyone by rasing the event\n");
+
+            if (OnOrderCreated != null)
+            {
+                OnOrderCreated(this, new OrderEventArgs(OrderID, OrderTotalPrice, ClientEmail));
+            }
+        }
+    }
+    public class EmailService
+    {
+        public void Subscribe(Order order)
+        {
+            order.OnOrderCreated += HandleNewOrder;
+        }
+
+        public void UnSubscribe(Order order)
+        {
+            order.OnOrderCreated -= HandleNewOrder;
+        }
+
+        public void HandleNewOrder(Object sender, OrderEventArgs e)
+        {
+            Console.WriteLine("------------Email Service------------");
+            Console.WriteLine("Email Service object receibed a new order evetn");
+            Console.WriteLine("Order ID:" + e.OrderID);
+            Console.WriteLine("Order Price:" + e.OrderTotalPrice);
+            Console.WriteLine("Email:" + e.ClientEmail);
+            Console.WriteLine("Send Email");
+            Console.WriteLine("-------------------------------------");
+
+            // Here I can write the code of send email
+
+            Console.WriteLine();
+        }
+    }
+    public class SMSService
+    {
+        public void Subscribe(Order order)
+        {
+            order.OnOrderCreated += HandleNewOrder;
+        }
+
+        public void UnSubscribe(Order order)
+        {
+            order.OnOrderCreated -= HandleNewOrder;
+        }
+
+        public void HandleNewOrder(Object sender, OrderEventArgs e)
+        {
+            Console.WriteLine("------------SMS Service------------");
+            Console.WriteLine("SMS Service object receibed a new order evetn");
+            Console.WriteLine("Order ID:" + e.OrderID);
+            Console.WriteLine("Order Price:" + e.OrderTotalPrice);
+            Console.WriteLine("Email:" + e.ClientEmail);
+            Console.WriteLine("Send SMS");
+            Console.WriteLine("-------------------------------------");
+
+            // Here I can write the code of send sms
+
+            Console.WriteLine();
+        }
+    }
+    public class ShippingService
+    {
+        public void Subscribe(Order order)
+        {
+            order.OnOrderCreated += HandleNewOrder;
+        }
+
+        public void UnSubscribe(Order order)
+        {
+            order.OnOrderCreated -= HandleNewOrder;
+        }
+
+        public void HandleNewOrder(Object sender, OrderEventArgs e)
+        {
+            Console.WriteLine("------------Shipping Service------------");
+            Console.WriteLine("Shipping Service object receibed a new order evetn");
+            Console.WriteLine("Order ID:" + e.OrderID);
+            Console.WriteLine("Order Price:" + e.OrderTotalPrice);
+            Console.WriteLine("Email:" + e.ClientEmail);
+            Console.WriteLine("Send Shipping");
+            Console.WriteLine("-------------------------------------");
+
+            // Here I can write the code of send shipping
+
+            Console.WriteLine();
+        }
+    }
+
+
     public class Program
     {
         static void Main(string[] args)
         {
-            NewsPublisher publisher = new NewsPublisher();
-            NewsSubscriber subscriber1 = new NewsSubscriber("Sub1");
-            NewsSubscriber subscriber2 = new NewsSubscriber("Sub2");
+            Order order = new Order();
 
-            subscriber1.Subscribe(publisher);
-            subscriber2.Subscribe(publisher);
+            EmailService emailService = new EmailService();
+            SMSService smsService = new SMSService();
+            ShippingService shippingService = new ShippingService();
 
-            publisher.PublishNews("News", "Some text here nothing else");
+            emailService.Subscribe(order);
+            smsService.Subscribe(order);
+            shippingService.Subscribe(order);
 
-            subscriber1.UnSubscribe(publisher);
-
-            publisher.PublishNews("News2", "Some text here nothing else");
-
-            subscriber2.UnSubscribe(publisher);
-
-            publisher.PublishNews("News3", "Some text here nothing else");
+            order.Create(23, 554, "3sf@gmail.com");
         }
     }
 }

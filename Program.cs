@@ -257,7 +257,7 @@ namespace ConsoleApp4
 
     public class Program
     {
-        // Example 2, Func Delegate ( If the function have return value )
+        // Example 2, Func Delegate ( If the function have return value | Func<parameter type, return type> )
         static int SquareMethod(int x)
         {
             return x * x;
@@ -266,7 +266,7 @@ namespace ConsoleApp4
         static Func<int, int> square = SquareMethod;
 
 
-        // Example 3, Action Delegate (If the function don't have return value )
+        // Example 3, Action Delegate (If the function don't have return value | Action<parameter type> )
         static void PrintHello()
         {
             Console.WriteLine("Hello");
@@ -280,10 +280,19 @@ namespace ConsoleApp4
         static Action printHello = PrintHello;
         static Action<string> printHelloWithMessage = PrintHelloWithMessage;
 
+
+        // Example 4, Predicate Delegate ( If the function return boolean and have only one parameter | 
+        static bool IsEven(int x)
+        {
+            return (x % 2 == 0);
+        }
+
+        static Predicate<int> IsEvenPredicate = IsEven;
+
+        
         static void Main(string[] args)
         {
-            printHello();
-            printHelloWithMessage("World");
+            Console.WriteLine(IsEvenPredicate(4));
         }
     }
 }
